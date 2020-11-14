@@ -18,18 +18,22 @@ import MapScreen from "./components/MapScreen";
 import ListScreen from "./components/ListScreen";
 import DetailScreen from "./components/DetailScreen";
 
-const StackScreenMap = () => {
+const StackScreenMap = (props) => {
   return (
 		<Stack.Navigator>
-			<Stack.Screen name="AppName" component={MapScreen} />
+			<Stack.Screen name="AppName">
+				{() => <MapScreen {...props} data={props.data} />}
+			</Stack.Screen>
 			<Stack.Screen name="Detail" component={DetailScreen} />
 		</Stack.Navigator>
 	);
 }
-const StackScreenList = () => {
+const StackScreenList = (props) => {
   return (
 		<Stack.Navigator>
-			<Stack.Screen name="AppName" component={ListScreen} />
+			<Stack.Screen name="AppName">
+				{() => <ListScreen {...props} data={props.data} />}
+			</Stack.Screen>
 			<Stack.Screen name="Detail" component={DetailScreen} />
 		</Stack.Navigator>
 	);
@@ -37,6 +41,7 @@ const StackScreenList = () => {
 
 export default function App() {
   const [data, setData] = useState([]);
+
   // Functie voor data in te laden
   const loadData = async() => {
     try {
@@ -48,24 +53,21 @@ export default function App() {
       console.log(exception)
     }
   }
-
-  // Functie oproepen zodra screen worrdt geladen
+  // Functie oproepen zodra screen wordt geladen
   useEffect(() => {
     loadData();
   }, [])
-
-  console.log(data) // test
 
   return (
 		<View style={{ flex: 1 }}>
 			<NavigationContainer>
 				<Tab.Navigator>
-					<Tab.Screen name="Map" component={StackScreenMap} options={
-            {tabBarIcon: (color, size) => <Feather name="map" size={size} color={color} />}
-          }/>
-					<Tab.Screen name="List" component={StackScreenList} options={
-            {tabBarIcon: (color, size) => <Feather name="list" size={size} color={color} />}
-          }/>
+					<Tab.Screen name="Map" options={{tabBarIcon: (color, size) => (<Feather name="map" size={size} color={color} />)}}>
+            {props => <StackScreenMap {...props} data={data} />}
+          </Tab.Screen>
+					<Tab.Screen name="List" options={{tabBarIcon: (color, size) => (<Feather name="list" size={size} color={color} />)}}>
+            {props => <StackScreenList {...props} data={data} />}
+          </Tab.Screen>
 				</Tab.Navigator>
 			</NavigationContainer>
 			<StatusBar style="auto" />
