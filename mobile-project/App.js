@@ -4,7 +4,6 @@ import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { FlatList } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-community/async-storage";
 import MapView, { Marker } from "react-native-maps";
 // Icons
@@ -62,10 +61,10 @@ export default function App() {
 		<View style={{ flex: 1 }}>
 			<NavigationContainer>
 				<Tab.Navigator>
-					<Tab.Screen name="Map" options={{tabBarIcon: (color, size) => (<Feather name="map" size={size} color={color} />)}}>
+					<Tab.Screen name="Map" options={{tabBarIcon: ({color, size}) => (<Feather name="map" size={size} color={color} />)}}>
             {props => <StackScreenMap {...props} data={data} />}
           </Tab.Screen>
-					<Tab.Screen name="List" options={{tabBarIcon: (color, size) => (<Feather name="list" size={size} color={color} />)}}>
+					<Tab.Screen name="List" options={{tabBarIcon: ({color, size}) => (<Feather name="list" size={size} color={color} />)}}>
             {props => <StackScreenList {...props} data={data} />}
           </Tab.Screen>
 				</Tab.Navigator>
