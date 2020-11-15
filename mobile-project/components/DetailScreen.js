@@ -1,17 +1,21 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { View, Text, StyleSheet } from "react-native";
 import InfoField from "./InfoField";
 
-export default DetailScreen = ({route}) => {
+export default DetailScreen = ({route, navigation}) => {
 	let location = route.params.itemInfo;
 	// different output depending on whether houseNumber is provided
 		let address = `${location.straat} ${location.huisnummer}, ${location.postcode} ${location.district}`;
 		if (location.huisnummer == " ")
 			address = `${location.straat}, ${location.postcode} ${location.district}`;
 
+	// removing screenTitle
+	useEffect(() => {
+		navigation.setOptions({ title: "" });
+	}, []);
+
 	return (
 		<View style={styles.container}>
-			<Text style={styles.title}>{location.naam}</Text>
 			<InfoField title="Naam:" info={location.naam} />
 			<InfoField title="Adres:" info={address} />
 			<InfoField title="Type:" info={`${location.type} (${location.subtype})`} />
@@ -27,10 +31,5 @@ const styles = StyleSheet.create({
 		padding: 15,
 		borderBottomColor: "#e5e1dc",
 		borderBottomWidth: 1,
-	},
-	title: {
-		fontWeight: "600",
-		fontSize: 18,
-		marginBottom: 10,
 	}
 });

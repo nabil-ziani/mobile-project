@@ -12,7 +12,7 @@ export default InfoField = (props) => {
 
 const styles = StyleSheet.create({
 	infoTitle: {
-		fontWeight: "600",
+		fontWeight: "bold",
 		fontSize: 16,
 	},
 	info: {
