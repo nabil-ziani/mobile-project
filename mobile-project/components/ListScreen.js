@@ -43,10 +43,10 @@ const styles = StyleSheet.create({
 		right: 20,
 	},
 	locationName: {
-		fontWeight: "600",
+		fontWeight: "bold",
 		fontSize: 16,
 	},
 	locationAddress: {
-		fontSize: 15
-	}
+		fontSize: 15,
+	},
 });
