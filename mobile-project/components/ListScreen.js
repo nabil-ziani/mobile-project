@@ -7,17 +7,12 @@ export default ListScreen = ({navigation, data}) => {
 	// This function returns JSX for each location
 	const renderItem = ({item}) => {
 		let location = item.properties;
-		// checking if houseNumber is provided so we can show right output
-		let houseNumberProvided = true;
-		if (location.huisnummer == " ")
-			houseNumberProvided = false;
 
 		return (
 			<TouchableOpacity onPress={() => navigation.navigate('Detail', {itemInfo: location})}>
 					<View style={styles.container}>
 						<Text style={styles.locationName}>{location.naam}</Text>
-						{houseNumberProvided && <Text style={styles.locationAddress}>{location.straat} {location.huisnummer}, {location.postcode} {location.district}</Text>}
-						{!houseNumberProvided && <Text style={styles.locationAddress}>{location.straat}, {location.postcode} {location.district}</Text>}
+						<Text style={styles.locationAddress}>{location.postcode} {location.district}, {location.straat} {location.huisnummer}</Text>
 						<Ionicons style={styles.icon} name="ios-arrow-forward" size={18} color="#76777c" />
 					</View>
 			</TouchableOpacity>
