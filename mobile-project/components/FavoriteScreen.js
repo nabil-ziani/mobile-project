@@ -40,7 +40,11 @@ export default FavoriteScreen = ({data, navigation}) => {
 			{!isEmpty ? locations.map((location, index) => {
 				location = location.properties;
 				return (
-					<TouchableOpacity key={index} onPress={() => navigation.navigate('DetailList', {itemInfo: location})}>
+					<TouchableOpacity key={index} onPress={() => navigation.navigate('List', {
+						screen : 'DetailList',
+						inital: false,
+						params: {itemInfo: location}
+						})}>
 							<View style={styles.container}>
 								<Text style={styles.locationName}>{location.naam}</Text>
 								<Text style={styles.locationAddress}>{location.postcode} {location.district}, {location.straat} {location.huisnummer}</Text>

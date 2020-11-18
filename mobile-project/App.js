@@ -43,7 +43,6 @@ const StackScreenFavorite = (props) => {
 			<Stack.Screen name="Favorites">
 				{() => <FavoriteScreen {...props} data={props.data} />}
 			</Stack.Screen>
-			<Stack.Screen name="DetailFavorites" component={DetailScreen} />
 		</Stack.Navigator>
 	);
 };
