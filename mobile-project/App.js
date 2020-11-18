@@ -15,6 +15,7 @@ const Tab = createBottomTabNavigator();
 import MapScreen from "./components/MapScreen";
 import ListScreen from "./components/ListScreen";
 import DetailScreen from "./components/DetailScreen";
+import FavoriteScreen from './components/FavoriteScreen';
 
 const StackScreenMap = (props) => {
   return (
@@ -32,10 +33,20 @@ const StackScreenList = (props) => {
       <Stack.Screen name="AppName">
         {() => <ListScreen {...props} data={props.data} />}
       </Stack.Screen>
-      <Stack.Screen name="Detail" component={DetailScreen} />
+      <Stack.Screen name="DetailList" component={DetailScreen} />
     </Stack.Navigator>
   );
 }
+const StackScreenFavorite = (props) => {
+	return (
+		<Stack.Navigator>
+			<Stack.Screen name="Favorites">
+				{() => <FavoriteScreen {...props} data={props.data} />}
+			</Stack.Screen>
+			<Stack.Screen name="DetailFavorites" component={DetailScreen} />
+		</Stack.Navigator>
+	);
+};
 
 export default function App() {
   const [data, setData] = useState([]);
@@ -65,6 +76,9 @@ export default function App() {
           </Tab.Screen>
           <Tab.Screen name="List" options={{ tabBarIcon: ({ color, size }) => (<Feather name="list" size={size} color={color} />) }}>
             {props => <StackScreenList {...props} data={data} />}
+          </Tab.Screen>
+          <Tab.Screen name="Favorites" options={{ tabBarIcon: ({ color, size }) => (<Feather name="star" size={size} color={color} />) }}>
+            {props => <StackScreenFavorite {...props} data={data} />}
           </Tab.Screen>
         </Tab.Navigator>
       </NavigationContainer>

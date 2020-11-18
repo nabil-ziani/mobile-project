@@ -52,6 +52,7 @@ export default DetailScreen = ({route, navigation}) => {
 			<InfoField title="Beheerder:" info={location.beheerder == null ? "Onbekend" : location.beheerder} />
 			<Button title={title} onPress={() => {
 				isStored ? removeFavorite() : storeFavorite();
+				setIsStored(!isStored);
 			}} />
 		</View>
 	);
