@@ -50,6 +50,7 @@ export default DetailScreen = ({route, navigation}) => {
 			<InfoField title="Type:" info={`${location.type} (${location.subtype})`} />
 			<InfoField title="Eigenaar:" info={location.eigenaar == null ? "Onbekend" : location.eigenaar} />
 			<InfoField title="Beheerder:" info={location.beheerder == null ? "Onbekend" : location.beheerder} />
+			<Button title="Naam een foto" onPress={() => navigation.navigate("Camera")} />
 			<Button title={title} onPress={() => {
 				isStored ? removeFavorite() : storeFavorite();
 				setIsStored(!isStored);

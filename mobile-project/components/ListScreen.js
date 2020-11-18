@@ -9,7 +9,7 @@ export default ListScreen = ({navigation, data}) => {
 		let location = item.properties;
 
 		return (
-			<TouchableOpacity onPress={() => navigation.navigate('DetailList', {itemInfo: location})}>
+			<TouchableOpacity onPress={() => navigation.navigate('Detail', {itemInfo: location})}>
 					<View style={styles.container}>
 						<Text style={styles.locationName}>{location.naam}</Text>
 						<Text style={styles.locationAddress}>{location.postcode} {location.district}, {location.straat} {location.huisnummer}</Text>

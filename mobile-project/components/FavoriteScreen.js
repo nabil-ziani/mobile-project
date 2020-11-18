@@ -41,7 +41,7 @@ export default FavoriteScreen = ({data, navigation}) => {
 				location = location.properties;
 				return (
 					<TouchableOpacity key={index} onPress={() => navigation.navigate('List', {
-						screen : 'DetailList',
+						screen : 'Detail',
 						inital: false,
 						params: {itemInfo: location}
 						})}>
