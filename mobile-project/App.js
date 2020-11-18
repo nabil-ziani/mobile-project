@@ -20,7 +20,7 @@ import FavoriteScreen from './components/FavoriteScreen';
 const StackScreenMap = (props) => {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="AppName">
+      <Stack.Screen name="Map">
         {() => <MapScreen {...props} data={props.data} />}
       </Stack.Screen>
       <Stack.Screen name="Detail" component={DetailScreen} />
@@ -30,7 +30,7 @@ const StackScreenMap = (props) => {
 const StackScreenList = (props) => {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="AppName">
+      <Stack.Screen name="List">
         {() => <ListScreen {...props} data={props.data} />}
       </Stack.Screen>
       <Stack.Screen name="DetailList" component={DetailScreen} />
