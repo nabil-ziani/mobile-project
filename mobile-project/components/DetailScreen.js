@@ -1,11 +1,13 @@
 import React, {useEffect, useState} from "react";
-import { View, Button, StyleSheet } from "react-native";
+import { View, Button, StyleSheet, Image } from "react-native";
 import InfoField from "./InfoField";
 import AsyncStorage from "@react-native-community/async-storage";
+import * as FileSystem from "expo-file-system";
 
 export default DetailScreen = ({route, navigation}) => {
 	const [title, setTitle] = useState("Voeg toe aan favorieten");
 	const [isStored, setIsStored] = useState(false);
+	const [image, setImage] = useState();
 
 	const storeFavorite = async () => {
 		try {
@@ -35,22 +37,33 @@ export default DetailScreen = ({route, navigation}) => {
 			console.log(e);
 		}
 	};
+	const loadImage = async () => {
+		const path = `${FileSystem.documentDirectory}${location.id}`;
+		console.log('ik ben in functie')
+		// check if there exists an image for this location
+		const image = await FileSystem.getInfoAsync(path);
+		if (image.exists) {
+			setImage(image.uri);
+		}
+	}
 
 	let location = route.params.itemInfo;
 	// removing screenTitle and loading favorite locations
 	useEffect(() => {
 		navigation.setOptions({ title: "" });
 		loadFavorite();
+		loadImage();
 	}, []);
 
 	return (
 		<View style={styles.container}>
+			{image && <Image source={{uri: image}} style={styles.image} />}
 			<InfoField title="Naam:" info={location.naam} />
 			<InfoField title="Adres:" info={`${location.postcode} ${location.district}, ${location.straat} ${location.huisnummer}`} />
 			<InfoField title="Type:" info={`${location.type} (${location.subtype})`} />
 			<InfoField title="Eigenaar:" info={location.eigenaar == null ? "Onbekend" : location.eigenaar} />
 			<InfoField title="Beheerder:" info={location.beheerder == null ? "Onbekend" : location.beheerder} />
-			<Button title="Naam een foto" onPress={() => navigation.navigate("Camera")} />
+			<Button title="Naam een foto" onPress={() => navigation.navigate("Camera", {itemInfo: location})} />
 			<Button title={title} onPress={() => {
 				isStored ? removeFavorite() : storeFavorite();
 				setIsStored(!isStored);
@@ -65,5 +78,9 @@ const styles = StyleSheet.create({
 		padding: 15,
 		borderBottomColor: "#e5e1dc",
 		borderBottomWidth: 1,
+	},
+	image: {
+    height: 100,
+    width: 300
 	}
 });

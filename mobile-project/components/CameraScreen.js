@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Camera } from 'expo-camera';
-import { View, Button, StyleSheet, Text,Image } from "react-native";
+import { View, Button, StyleSheet, Text } from "react-native";
+import * as FileSystem from 'expo-file-system';
 
-export default CameraScreen = () => {
+export default CameraScreen = ({navigation, route}) => {
   const [hasPermission, setHasPermission] = useState();
   const [image, setImage] = useState();
   const camera = useRef();
@@ -10,6 +11,14 @@ export default CameraScreen = () => {
   const takePicture = async () => {
     let picture = await camera.current.takePictureAsync();
     setImage(picture.uri);
+    // downloading to the app's file system
+    try {
+      let location = route.params.itemInfo;
+      await FileSystem.downloadAsync(picture.uri, `${FileSystem.documentDirectory}${location.id}.jpg`);
+      console.log('image downloaded');
+    } catch (e) {
+      console.log(e)
+    }
   }
 
   useEffect(() => {
@@ -31,21 +40,10 @@ export default CameraScreen = () => {
   return (
     <View style={{flex: 1}}>
       <Camera style={{flex: 1}} type={Camera.Constants.Type.back} ref={camera} />
-
-      {image && <Image source={{uri: image}} style={styles.image} />}
-
-      {/*on click navigate back to Detail and show detail with the image..*/}
-      <Button title="Neem foto" onPress={takePicture} />
+      <Button title="Neem foto" onPress={() => {
+        takePicture();
+        navigation.goBack();
+      }} />
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-	image: {
-    position: 'absolute',
-    left: 5,
-    top: 5,
-    height: 300,
-    width: 150
-	},
-});
