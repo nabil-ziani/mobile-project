@@ -26,8 +26,6 @@ export default MapScreen = ({ navigation, data }) => {
         const location = await Location.getCurrentPositionAsync({});
         setCoordinates({ latitude: location.coords.latitude, longitude: location.coords.longitude, delta: 0.1 });
         setUserlocation(true);
-      } else {
-        setErrorMsg("Permission to access location was denied");
       }
     } catch (ex) {
       console.error(ex);
