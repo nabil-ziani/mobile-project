@@ -1,0 +1,6 @@
+<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+<string>Allow our app to use your location</string>
+<key>NSLocationAlwaysUsageDescription</key>
+<string>Allow our app to use your location</string>
+<key>NSLocationWhenInUseUsageDescription</key>
+<string>Allow our app to use your location</string>
