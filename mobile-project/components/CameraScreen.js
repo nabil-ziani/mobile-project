@@ -5,17 +5,17 @@ import * as FileSystem from 'expo-file-system';
 
 export default CameraScreen = ({navigation, route}) => {
   const [hasPermission, setHasPermission] = useState();
-  const [image, setImage] = useState();
   const camera = useRef();
 
   const takePicture = async () => {
     let picture = await camera.current.takePictureAsync();
-    setImage(picture.uri);
-    // downloading to the app's file system
+    // storing image in app's file system with locationId as name
     try {
       let location = route.params.itemInfo;
-      await FileSystem.downloadAsync(picture.uri, `${FileSystem.documentDirectory}${location.id}.jpg`);
-      console.log('image downloaded');
+      await FileSystem.moveAsync({
+        from: picture.uri,
+        to: FileSystem.documentDirectory + `${location.id}.jpg`
+      });
     } catch (e) {
       console.log(e)
     }
@@ -42,7 +42,7 @@ export default CameraScreen = ({navigation, route}) => {
       <Camera style={{flex: 1}} type={Camera.Constants.Type.back} ref={camera} />
       <Button title="Neem foto" onPress={() => {
         takePicture();
-        navigation.goBack();
+        navigation.popToTop();
       }} />
     </View>
   )

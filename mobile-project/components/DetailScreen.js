@@ -38,12 +38,15 @@ export default DetailScreen = ({route, navigation}) => {
 		}
 	};
 	const loadImage = async () => {
-		const path = `${FileSystem.documentDirectory}${location.id}`;
-		console.log('ik ben in functie')
-		// check if there exists an image for this location
-		const image = await FileSystem.getInfoAsync(path);
-		if (image.exists) {
-			setImage(image.uri);
+		try {
+			const path = `${FileSystem.documentDirectory}${location.id}.jpg`;
+			// check if there exists an image for this location
+			let picture = await FileSystem.getInfoAsync(path);
+			if (picture.exists) {
+				setImage(picture.uri);
+			}
+		} catch (e) {
+			console.log(e)
 		}
 	}
 
@@ -63,7 +66,7 @@ export default DetailScreen = ({route, navigation}) => {
 			<InfoField title="Type:" info={`${location.type} (${location.subtype})`} />
 			<InfoField title="Eigenaar:" info={location.eigenaar == null ? "Onbekend" : location.eigenaar} />
 			<InfoField title="Beheerder:" info={location.beheerder == null ? "Onbekend" : location.beheerder} />
-			<Button title="Naam een foto" onPress={() => navigation.navigate("Camera", {itemInfo: location})} />
+			<Button title="Neem een foto" onPress={() => navigation.navigate("Camera", {itemInfo: location})} />
 			<Button title={title} onPress={() => {
 				isStored ? removeFavorite() : storeFavorite();
 				setIsStored(!isStored);
@@ -80,7 +83,8 @@ const styles = StyleSheet.create({
 		borderBottomWidth: 1,
 	},
 	image: {
-    height: 100,
-    width: 300
+		height: '30%',
+    width: '100%',
+		marginBottom: 10
 	}
 });
