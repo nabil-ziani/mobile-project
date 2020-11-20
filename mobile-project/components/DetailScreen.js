@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import { View, Button, StyleSheet, Image } from "react-native";
+import { View, Button, StyleSheet, Image, Text } from "react-native";
 import InfoField from "./InfoField";
 import AsyncStorage from "@react-native-community/async-storage";
 import * as FileSystem from "expo-file-system";
@@ -7,7 +7,7 @@ import * as FileSystem from "expo-file-system";
 export default DetailScreen = ({route, navigation}) => {
 	const [title, setTitle] = useState("Voeg toe aan favorieten");
 	const [isStored, setIsStored] = useState(false);
-	const [image, setImage] = useState();
+	const [image, setImage] = useState('');
 
 	const storeFavorite = async () => {
 		try {
@@ -39,10 +39,12 @@ export default DetailScreen = ({route, navigation}) => {
 	};
 	const loadImage = async () => {
 		try {
-			const path = `${FileSystem.documentDirectory}${location.id}.jpg`;
+			let path = `${FileSystem.documentDirectory}${location.id}.jpg`;
 			// check if there exists an image for this location
 			let picture = await FileSystem.getInfoAsync(path);
 			if (picture.exists) {
+				console.log('er bestaat een foto')
+				console.log(picture.uri)
 				setImage(picture.uri);
 			}
 		} catch (e) {
@@ -60,7 +62,7 @@ export default DetailScreen = ({route, navigation}) => {
 
 	return (
 		<View style={styles.container}>
-			{image && <Image source={{uri: image}} style={styles.image} />}
+			{image !== '' ? <Image source={{uri: image}} style={styles.image} /> : <View />}
 			<InfoField title="Naam:" info={location.naam} />
 			<InfoField title="Adres:" info={`${location.postcode} ${location.district}, ${location.straat} ${location.huisnummer}`} />
 			<InfoField title="Type:" info={`${location.type} (${location.subtype})`} />
