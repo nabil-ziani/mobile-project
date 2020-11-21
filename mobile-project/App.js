@@ -16,6 +16,7 @@ import MapScreen from "./components/MapScreen";
 import ListScreen from "./components/ListScreen";
 import DetailScreen from "./components/DetailScreen";
 import FavoriteScreen from './components/FavoriteScreen';
+import CameraScreen from "./components/CameraScreen";
 
 const StackScreenMap = (props) => {
   return (
@@ -24,18 +25,20 @@ const StackScreenMap = (props) => {
         {() => <MapScreen {...props} data={props.data} />}
       </Stack.Screen>
       <Stack.Screen name="Detail" component={DetailScreen} />
+      <Stack.Screen name="Camera" component={CameraScreen} />
     </Stack.Navigator>
   );
 }
 const StackScreenList = (props) => {
   return (
-    <Stack.Navigator>
-      <Stack.Screen name="List">
-        {() => <ListScreen {...props} data={props.data} />}
-      </Stack.Screen>
-      <Stack.Screen name="DetailList" component={DetailScreen} />
-    </Stack.Navigator>
-  );
+		<Stack.Navigator>
+			<Stack.Screen name="List">
+				{() => <ListScreen {...props} data={props.data} />}
+			</Stack.Screen>
+			<Stack.Screen name="Detail" component={DetailScreen} />
+			<Stack.Screen name="Camera" component={CameraScreen} />
+		</Stack.Navigator>
+	);
 }
 const StackScreenFavorite = (props) => {
 	return (
