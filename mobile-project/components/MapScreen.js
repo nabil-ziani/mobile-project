@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react'
-import { View, Text, StyleSheet, Button, ActivityIndicator } from 'react-native';
+import React, { useEffect, useState, useRef } from 'react'
+import { View, Text, StyleSheet, Button, ActivityIndicator, Alert } from 'react-native';
 import MapView from "react-native-maps";
 import MarkerList from './MarkerList';
 import { Feather } from "@expo/vector-icons";
 import * as Location from "expo-location";
+import AsyncStorage from "@react-native-community/async-storage";
 
 const COORDS_START = {
   latitude: 51.216667,
@@ -12,34 +13,61 @@ const COORDS_START = {
 }
 
 export default MapScreen = ({ navigation, data }) => {
+  const mapRef = useRef();
   const [showDetailPopup, setShowDetailPopup] = useState(false);
   const [detailInfo, setDetailInfo] = useState({ title: "", address: "", properties: {} });
-  const [coordinates, setCoordinates] = useState(COORDS_START);
   const [loading, setLoading] = useState(true);
   const [userlocation, setUserlocation] = useState(false);
+  const [favorites, setFavorites] = useState([]);
 
   const getGeoLocation = async () => {
-    try {
-      const { status } = await Location.requestPermissionsAsync();
+    let userRegion;
 
-      if (status === "granted") {
+    const { status } = await Location.requestPermissionsAsync();
+
+    if (status === "granted") {
+      try {
         const location = await Location.getCurrentPositionAsync({});
-        setCoordinates({ latitude: location.coords.latitude, longitude: location.coords.longitude, delta: 0.1 });
-        setUserlocation(true);
+
+        userRegion = {
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+          latitudeDelta: 0.1,
+          longitudeDelta: 0.1
+        };
+      } catch (ex) {
+        Alert.alert("Location error", "Location request failed due to unsatisfied device settings.")
       }
-    } catch (ex) {
-      console.error(ex);
+
+      setUserlocation(true);
     }
 
     setLoading(false);
+
+    if (userRegion !== null) {
+      mapRef.current.animateToRegion(userRegion);
+    }
   }
 
-  const changeCoords = (coord) => {
-    setCoordinates({ latitude: coord.latitude, longitude: coord.longitude, delta: 0.1 })
+  const getFavorites = async () => {
+    try {
+      const keys = await AsyncStorage.getAllKeys();
+
+      if (keys.length > 0) {
+        setFavorites(keys);
+      } else {
+        setFavorites([]);
+      }
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   useEffect(() => {
     getGeoLocation();
+    navigation.addListener('focus', () => {
+      getFavorites();
+    });
   }, []);
 
   // Toont een standaard map zonder punten, na locatie ophalen zal standaard antwerpen coordinaten gebruiken of de gebruiker's coordinaten met bijbehorende markers van de api
@@ -50,10 +78,10 @@ export default MapScreen = ({ navigation, data }) => {
         <MapView
           style={styles.container}
           initialRegion={{
-            latitude: coordinates.latitude,
-            longitude: coordinates.longitude,
-            latitudeDelta: coordinates.delta,
-            longitudeDelta: coordinates.delta
+            latitude: COORDS_START.latitude,
+            longitude: COORDS_START.longitude,
+            latitudeDelta: COORDS_START.delta,
+            longitudeDelta: COORDS_START.delta
           }}
         />
         <View style={styles.loading}>
@@ -63,19 +91,19 @@ export default MapScreen = ({ navigation, data }) => {
       :
       <View style={styles.container}>
         <MapView
+          ref={mapRef}
           style={styles.container}
-          region={{
-            latitude: coordinates.latitude,
-            longitude: coordinates.longitude,
-            latitudeDelta: coordinates.delta,
-            longitudeDelta: coordinates.delta
+          initialRegion={{
+            latitude: COORDS_START.latitude,
+            longitude: COORDS_START.longitude,
+            latitudeDelta: COORDS_START.delta,
+            longitudeDelta: COORDS_START.delta
           }}
           showsUserLocation={userlocation}
-          onMarkerPress={(event) => changeCoords(event.nativeEvent.coordinate)}
         >
 
           {/* Data undefined voordat de json fetch wordt binnen gehaald */}
-          {data.length > 0 && <MarkerList data={data} setShowDetailPopup={setShowDetailPopup} setDetailInfo={setDetailInfo} />}
+          {data.length > 0 && <MarkerList data={data} setShowDetailPopup={setShowDetailPopup} setDetailInfo={setDetailInfo} favorites={favorites} />}
 
         </MapView>
         {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Marker } from 'react-native-maps';
 
-export default MarkerList = ({ data, setShowDetailPopup, setDetailInfo }) => {
+export default MarkerList = ({ data, setShowDetailPopup, setDetailInfo, favorites }) => {
 	return (
 		data.map((marker, index) => (
 			<Marker
@@ -15,6 +15,7 @@ export default MarkerList = ({ data, setShowDetailPopup, setDetailInfo }) => {
 						properties: marker.properties
 					})
 				}}
+				image={favorites.includes(`@${marker.properties.id}`) ? require("../assets/marker-icon-favorite.png") : require("../assets/marker-icon-standard.png")}
 			/>
 		))
 	)
