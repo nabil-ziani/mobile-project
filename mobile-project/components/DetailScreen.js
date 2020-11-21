@@ -39,12 +39,11 @@ export default DetailScreen = ({route, navigation}) => {
 	};
 	const loadImage = async () => {
 		try {
-			let path = `${FileSystem.documentDirectory}${location.id}.jpg`;
+			const randomString = await AsyncStorage.getItem(`@${location.naam}`);
+			let path = `${FileSystem.documentDirectory}${location.id}${randomString}.jpg`;
 			// check if there exists an image for this location
 			let picture = await FileSystem.getInfoAsync(path);
 			if (picture.exists) {
-				console.log('er bestaat een foto')
-				console.log(picture.uri)
 				setImage(picture.uri);
 			}
 		} catch (e) {
@@ -52,12 +51,15 @@ export default DetailScreen = ({route, navigation}) => {
 		}
 	}
 
+	// These are going to be sent to the CameraScreen
 	let location = route.params.itemInfo;
 	// removing screenTitle and loading favorite locations
 	useEffect(() => {
 		navigation.setOptions({ title: "" });
 		loadFavorite();
-		loadImage();
+		navigation.addListener('focus', () => {
+			loadImage();
+		})
 	}, []);
 
 	return (
