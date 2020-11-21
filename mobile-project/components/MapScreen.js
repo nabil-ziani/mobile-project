@@ -4,6 +4,7 @@ import MapView from "react-native-maps";
 import MarkerList from './MarkerList';
 import { Feather } from "@expo/vector-icons";
 import * as Location from "expo-location";
+import AsyncStorage from "@react-native-community/async-storage";
 
 const COORDS_START = {
   latitude: 51.216667,
@@ -17,6 +18,7 @@ export default MapScreen = ({ navigation, data }) => {
   const [detailInfo, setDetailInfo] = useState({ title: "", address: "", properties: {} });
   const [loading, setLoading] = useState(true);
   const [userlocation, setUserlocation] = useState(false);
+  const [favorites, setFavorites] = useState([]);
 
   const getGeoLocation = async () => {
     let userRegion;
@@ -47,8 +49,25 @@ export default MapScreen = ({ navigation, data }) => {
     }
   }
 
+  const getFavorites = async () => {
+    try {
+      const keys = await AsyncStorage.getAllKeys();
+
+      if (keys.length > 0) {
+        setFavorites(keys);
+      } else {
+        setFavorites([]);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   useEffect(() => {
     getGeoLocation();
+    navigation.addListener('focus', () => {
+      getFavorites();
+    });
   }, []);
 
   // Toont een standaard map zonder punten, na locatie ophalen zal standaard antwerpen coordinaten gebruiken of de gebruiker's coordinaten met bijbehorende markers van de api
@@ -84,7 +103,7 @@ export default MapScreen = ({ navigation, data }) => {
         >
 
           {/* Data undefined voordat de json fetch wordt binnen gehaald */}
-          {data.length > 0 && <MarkerList data={data} setShowDetailPopup={setShowDetailPopup} setDetailInfo={setDetailInfo} />}
+          {data.length > 0 && <MarkerList data={data} setShowDetailPopup={setShowDetailPopup} setDetailInfo={setDetailInfo} favorites={favorites} />}
 
         </MapView>
         {
