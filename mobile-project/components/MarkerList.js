@@ -15,6 +15,8 @@ export default MarkerList = ({ data, setShowDetailPopup, setDetailInfo }) => {
 						properties: marker.properties
 					})
 				}}
+				image={require("../assets/marker-icon.png")}
+				style={{ width: 25, height: 25 }}
 			/>
 		))
 	)

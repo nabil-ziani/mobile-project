@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { View, Text, StyleSheet, Button, ActivityIndicator } from 'react-native';
+import React, { useEffect, useState, useRef } from 'react'
+import { View, Text, StyleSheet, Button, ActivityIndicator, Alert } from 'react-native';
 import MapView from "react-native-maps";
 import MarkerList from './MarkerList';
 import { Feather } from "@expo/vector-icons";
@@ -12,30 +12,39 @@ const COORDS_START = {
 }
 
 export default MapScreen = ({ navigation, data }) => {
+  const mapRef = useRef();
   const [showDetailPopup, setShowDetailPopup] = useState(false);
   const [detailInfo, setDetailInfo] = useState({ title: "", address: "", properties: {} });
-  const [coordinates, setCoordinates] = useState(COORDS_START);
   const [loading, setLoading] = useState(true);
   const [userlocation, setUserlocation] = useState(false);
 
   const getGeoLocation = async () => {
-    try {
-      const { status } = await Location.requestPermissionsAsync();
+    let userRegion;
 
-      if (status === "granted") {
+    const { status } = await Location.requestPermissionsAsync();
+
+    if (status === "granted") {
+      try {
         const location = await Location.getCurrentPositionAsync({});
-        setCoordinates({ latitude: location.coords.latitude, longitude: location.coords.longitude, delta: 0.1 });
-        setUserlocation(true);
+
+        userRegion = {
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+          latitudeDelta: 0.1,
+          longitudeDelta: 0.1
+        };
+      } catch (ex) {
+        Alert.alert("Location error", "Location request failed due to unsatisfied device settings.")
       }
-    } catch (ex) {
-      console.error(ex);
+
+      setUserlocation(true);
     }
 
     setLoading(false);
-  }
 
-  const changeCoords = (coord) => {
-    setCoordinates({ latitude: coord.latitude, longitude: coord.longitude, delta: 0.1 })
+    if (userRegion !== null) {
+      mapRef.current.animateToRegion(userRegion);
+    }
   }
 
   useEffect(() => {
@@ -50,10 +59,10 @@ export default MapScreen = ({ navigation, data }) => {
         <MapView
           style={styles.container}
           initialRegion={{
-            latitude: coordinates.latitude,
-            longitude: coordinates.longitude,
-            latitudeDelta: coordinates.delta,
-            longitudeDelta: coordinates.delta
+            latitude: COORDS_START.latitude,
+            longitude: COORDS_START.longitude,
+            latitudeDelta: COORDS_START.delta,
+            longitudeDelta: COORDS_START.delta
           }}
         />
         <View style={styles.loading}>
@@ -63,15 +72,15 @@ export default MapScreen = ({ navigation, data }) => {
       :
       <View style={styles.container}>
         <MapView
+          ref={mapRef}
           style={styles.container}
-          region={{
-            latitude: coordinates.latitude,
-            longitude: coordinates.longitude,
-            latitudeDelta: coordinates.delta,
-            longitudeDelta: coordinates.delta
+          initialRegion={{
+            latitude: COORDS_START.latitude,
+            longitude: COORDS_START.longitude,
+            latitudeDelta: COORDS_START.delta,
+            longitudeDelta: COORDS_START.delta
           }}
           showsUserLocation={userlocation}
-          onMarkerPress={(event) => changeCoords(event.nativeEvent.coordinate)}
         >
 
           {/* Data undefined voordat de json fetch wordt binnen gehaald */}
