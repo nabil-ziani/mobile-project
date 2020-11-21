@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
-import { Ionicons } from "@expo/vector-icons";
+// Custom Component
+import ListItem from './ListItem';
 
 export default FavoriteScreen = ({data, navigation}) => {
 	const [locations, setLocations] = useState([]);
@@ -40,43 +41,13 @@ export default FavoriteScreen = ({data, navigation}) => {
 			{!isEmpty ? locations.map((location, index) => {
 				location = location.properties;
 				return (
-					<TouchableOpacity key={index} onPress={() => navigation.navigate('List', {
-						screen : 'Detail',
-						inital: false,
-						params: {itemInfo: location}
-						})}>
-							<View style={styles.container}>
-								<Text style={styles.locationName}>{location.naam}</Text>
-								<Text style={styles.locationAddress}>{location.postcode} {location.district}, {location.straat} {location.huisnummer}</Text>
-								<Ionicons style={styles.icon} name="ios-arrow-forward" size={18} color="#76777c" />
-							</View>
+					<TouchableOpacity key={index} onPress={() => navigation.navigate('List', {screen : 'Detail', initial: false, params: {itemInfo: location}})}>
+							<ListItem data={location} />
 					</TouchableOpacity>
-				)
-			}) :
+				)}) :
 					<View style={{padding: 20}}>
-						<Text style={styles.locationName}>Er zijn nog geen favorieten toegevoegd.</Text>
+						<Text style={{fontSize: 16, fontWeight: 'bold'}}>Er zijn nog geen favorieten toegevoegd.</Text>
 					</View>}
 		</ScrollView>
 	);
 }
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		justifyContent: "center",
-		padding: 15,
-		borderBottomColor: "#e5e1dc",
-		borderBottomWidth: 1,
-	},
-	icon: {
-		position: "absolute",
-		right: 20,
-	},
-	locationName: {
-		fontWeight: "bold",
-		fontSize: 16,
-	},
-	locationAddress: {
-		fontSize: 15,
-	},
-});

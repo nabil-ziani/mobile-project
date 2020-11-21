@@ -8,16 +8,9 @@ export default CameraScreen = ({navigation, route}) => {
   const camera = useRef();
 
   const takePicture = async () => {
-    let location = route.params.itemInfo;
-    // check if image exists and deleting it
-    let path = `${FileSystem.documentDirectory}${location.id}.jpg`;
-    let checkImage = await FileSystem.getInfoAsync(path);
-		if (checkImage.exists) {
-			await FileSystem.deleteAsync(path);
-		}
-    // taking new picture
     let picture = await camera.current.takePictureAsync();
     try {
+      let location = route.params.itemInfo;
 			// storing image in app's file system
 			await FileSystem.moveAsync({
 				from: picture.uri,
