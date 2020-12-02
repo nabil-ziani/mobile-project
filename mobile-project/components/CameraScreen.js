@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, {useRef } from 'react';
 import { Camera } from 'expo-camera';
-import { View, Button, Text } from "react-native";
+import { View, Button } from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
 import * as FileSystem from 'expo-file-system';
 

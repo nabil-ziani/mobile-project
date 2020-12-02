@@ -9,7 +9,6 @@ export default DetailScreen = ({route, navigation}) => {
 	const [title, setTitle] = useState("Voeg toe aan favorieten");
 	const [isStored, setIsStored] = useState(false);
 	const [image, setImage] = useState('');
-  const [hasPermission, setHasPermission] = useState();
 
 	const storeFavorite = async () => {
 		try {
@@ -52,6 +51,14 @@ export default DetailScreen = ({route, navigation}) => {
 			console.log(e)
 		}
 	};
+	const askPermission = async () => {
+		const { status } = await Camera.requestPermissionsAsync();
+		if (status === "granted") {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 	// This location is going to be sent to the CameraScreen
 	let location = route.params.itemInfo;
@@ -59,11 +66,6 @@ export default DetailScreen = ({route, navigation}) => {
 	useEffect(() => {
 		navigation.setOptions({ title: "" });
 		loadFavorite();
-		// ask permissions for using camera
-		(async () => {
-			const { status } = await Camera.requestPermissionsAsync();
-			setHasPermission(status === "granted")
-		})();
 		// when screen is focused, load (new) image if there is
 		navigation.addListener('focus', () => {
 			loadImage();
@@ -78,7 +80,7 @@ export default DetailScreen = ({route, navigation}) => {
 			<InfoField title="Type:" info={`${location.type} (${location.subtype})`} />
 			<InfoField title="Eigenaar:" info={location.eigenaar == null ? "Onbekend" : location.eigenaar} />
 			<InfoField title="Beheerder:" info={location.beheerder == null ? "Onbekend" : location.beheerder} />
-			<Button title="Neem een foto" onPress={() => hasPermission && navigation.navigate("Camera", {itemInfo: location})} />
+			<Button title="Neem een foto" onPress={async () => await askPermission() && navigation.navigate("Camera", {itemInfo: location})} />
 			<View style={{height: 10}} />
 			<Button title={title} onPress={() => {
 				isStored ? removeFavorite() : storeFavorite();
