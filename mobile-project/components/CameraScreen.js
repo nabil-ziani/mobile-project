@@ -5,7 +5,6 @@ import AsyncStorage from "@react-native-community/async-storage";
 import * as FileSystem from 'expo-file-system';
 
 export default CameraScreen = ({navigation, route}) => {
-  const [hasPermission, setHasPermission] = useState();
   const camera = useRef();
 
   const takePicture = async () => {
@@ -26,20 +25,6 @@ export default CameraScreen = ({navigation, route}) => {
 		} catch (e) {
       console.log(e)
     }
-  }
-
-  useEffect(() => {
-    (async () => {
-      const { status } = await Camera.requestPermissionsAsync();
-      setHasPermission(status === 'granted');
-    })();
-  }, []);
-
-  if (hasPermission === null) {
-    return <View />
-  }
-  if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
   }
 
   return (

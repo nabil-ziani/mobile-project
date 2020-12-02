@@ -3,11 +3,13 @@ import { View, Button, StyleSheet, Image, Text } from "react-native";
 import InfoField from "./InfoField";
 import AsyncStorage from "@react-native-community/async-storage";
 import * as FileSystem from "expo-file-system";
+import { Camera } from "expo-camera";
 
 export default DetailScreen = ({route, navigation}) => {
 	const [title, setTitle] = useState("Voeg toe aan favorieten");
 	const [isStored, setIsStored] = useState(false);
 	const [image, setImage] = useState('');
+  const [hasPermission, setHasPermission] = useState();
 
 	const storeFavorite = async () => {
 		try {
@@ -49,14 +51,20 @@ export default DetailScreen = ({route, navigation}) => {
 		} catch (e) {
 			console.log(e)
 		}
-	}
+	};
 
-	// These are going to be sent to the CameraScreen
+	// This location is going to be sent to the CameraScreen
 	let location = route.params.itemInfo;
 	// removing screenTitle and loading favorite locations
 	useEffect(() => {
 		navigation.setOptions({ title: "" });
 		loadFavorite();
+		// ask permissions for using camera
+		(async () => {
+			const { status } = await Camera.requestPermissionsAsync();
+			setHasPermission(status === "granted")
+		})();
+		// when screen is focused, load (new) image if there is
 		navigation.addListener('focus', () => {
 			loadImage();
 		})
@@ -70,7 +78,7 @@ export default DetailScreen = ({route, navigation}) => {
 			<InfoField title="Type:" info={`${location.type} (${location.subtype})`} />
 			<InfoField title="Eigenaar:" info={location.eigenaar == null ? "Onbekend" : location.eigenaar} />
 			<InfoField title="Beheerder:" info={location.beheerder == null ? "Onbekend" : location.beheerder} />
-			<Button title="Neem een foto" onPress={() => navigation.navigate("Camera", {itemInfo: location})} />
+			<Button title="Neem een foto" onPress={() => hasPermission && navigation.navigate("Camera", {itemInfo: location})} />
 			<View style={{height: 10}} />
 			<Button title={title} onPress={() => {
 				isStored ? removeFavorite() : storeFavorite();
